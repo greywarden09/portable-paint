@@ -1,14 +1,15 @@
 #include "MenuBar.hpp"
 
-#include <QIcon>
-#include <QFile>
-#include <QStyle>
-#include <QFileDialog>
-
-#include "../../windows/about/AboutDialog.hpp"
+#include <QMessageBox>
 
 MenuBar::MenuBar(QWidget *parent)
-    : QMenuBar(parent) {
+    : QMenuBar(parent),
+      fileMenu(addMenu(tr("File"))),
+      editMenu(addMenu(tr("Edit"))),
+      toolsMenu(addMenu(tr("Tools"))),
+      viewMenu(addMenu(tr("View"))),
+      imageMenu(addMenu(tr("Image"))),
+      helpMenu(addMenu(tr("Help"))) {
     createFileMenu();
     createEditMenu();
     createToolsMenu();
@@ -18,88 +19,74 @@ MenuBar::MenuBar(QWidget *parent)
 }
 
 void MenuBar::createFileMenu() {
-    fileMenu = addMenu("File");
-
-    newAction = fileMenu->addAction(QIcon(":/resources/new.svg"), "New", QKeyCombination(Qt::CTRL | Qt::Key_N));
-    openAction = fileMenu->addAction(QIcon(":/resources/open.svg"), "Open", QKeyCombination(Qt::CTRL | Qt::Key_O));
-    saveAction = fileMenu->addAction(QIcon(":/resources/save.svg"), "Save", QKeyCombination(Qt::CTRL | Qt::Key_S));
-    saveAction = fileMenu->addAction("Save As...", QKeyCombination(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
+    newAction = fileMenu->addAction(getIcon("new"), tr("New"), QKeyCombination(Qt::CTRL | Qt::Key_N));
+    openAction = fileMenu->addAction(getIcon("open"), tr("Open"), QKeyCombination(Qt::CTRL | Qt::Key_O));
+    saveAction = fileMenu->addAction(getIcon("save"), tr("Save"), QKeyCombination(Qt::CTRL | Qt::Key_S));
+    saveAction = fileMenu->addAction(tr("Save As..."), QKeyCombination(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
     fileMenu->addSeparator();
-    fileMenu->addAction(QIcon(":/resources/print.svg"), "Print", QKeyCombination(Qt::CTRL | Qt::Key_P));
-    exitAction = fileMenu->addAction(QIcon(":/resources/exit.svg"), "Exit");
-
-    connect(openAction, &QAction::triggered, this, [this] {
-        QString selfilter = tr("JPEG (*.jpg *.jpeg)");
-        QString fileName = QFileDialog::getOpenFileName(
-            this,
-            "Open file",
-            ".",
-            tr("All files (*.*);;JPEG (*.jpg *.jpeg);;PNG (*.png)"),
-            &selfilter
-        );
-    });
+    fileMenu->addAction(getIcon("print"), tr("Print"), QKeyCombination(Qt::CTRL | Qt::Key_P));
+    exitAction = fileMenu->addAction(getIcon("exit"), tr("Exit"));
 }
 
 void MenuBar::createEditMenu() {
-    editMenu = addMenu("Edit");
-
-    undoAction = editMenu->addAction(QIcon(":/resources/undo.svg"), "Undo");
-    redoAction = editMenu->addAction(QIcon(":/resources/redo.svg"), "Redo");
+    undoAction = editMenu->addAction(getIcon("undo"), tr("Undo"), QKeyCombination(Qt::CTRL | Qt::Key_Z));
+    redoAction = editMenu->addAction(getIcon("redo"), tr("Redo"), QKeyCombination(Qt::CTRL | Qt::Key_Y));
     editMenu->addSeparator();
-    cutAction = editMenu->addAction(QIcon(":/resources/cut.svg"), "Cut", QKeyCombination(Qt::CTRL | Qt::Key_X));
-    copyAction = editMenu->addAction(QIcon(":/resources/copy.svg"), "Copy", QKeyCombination(Qt::CTRL | Qt::Key_C));
-    pasteAction = editMenu->addAction(QIcon(":/resources/paste.svg"), "Paste", QKeyCombination(Qt::CTRL | Qt::Key_V));
+    cutAction = editMenu->addAction(getIcon("cut"), tr("Cut"), QKeyCombination(Qt::CTRL | Qt::Key_X));
+    copyAction = editMenu->addAction(getIcon("copy"), tr("Copy"), QKeyCombination(Qt::CTRL | Qt::Key_C));
+    pasteAction = editMenu->addAction(getIcon("paste"), tr("Paste"), QKeyCombination(Qt::CTRL | Qt::Key_V));
 }
 
 void MenuBar::createToolsMenu() {
-    toolsMenu = addMenu("Tools");
-
-    pencilToolAction = toolsMenu->addAction(QIcon(":/resources/pencil.svg"), "Pencil");
+    pencilToolAction = toolsMenu->addAction(getIcon("pencil"), tr("Pencil"));
     pencilToolAction->setCheckable(true);
-    brushToolAction = toolsMenu->addAction(QIcon(":/resources/brush.svg"), "Brush");
+    brushToolAction = toolsMenu->addAction(getIcon("brush"), tr("Brush"));
     brushToolAction->setCheckable(true);
-    eraserToolAction = toolsMenu->addAction(QIcon(":/resources/eraser.svg"), "Eraser");
+    eraserToolAction = toolsMenu->addAction(getIcon("eraser"), tr("Eraser"));
     eraserToolAction->setCheckable(true);
 
     toolsMenu->addSeparator();
-    lineToolAction = toolsMenu->addAction(QIcon(":/resources/line.svg"), "Line");
-    rectangleToolAction = toolsMenu->addAction(QIcon(":/resources/rectangle.svg"), "Rectangle");
-    ellipseToolAction = toolsMenu->addAction(QIcon(":/resources/circle.svg"), "Ellipse");
+    lineToolAction = toolsMenu->addAction(getIcon("line"), tr("Line"));
+    rectangleToolAction = toolsMenu->addAction(getIcon("rectangle"), tr("Rectangle"));
+    ellipseToolAction = toolsMenu->addAction(getIcon("circle"), tr("Ellipse"));
 }
 
 void MenuBar::createViewMenu() {
-    viewMenu = addMenu("View");
-
-    zoomInAction = viewMenu->addAction("Zoom In");
-    zoomOutAction = viewMenu->addAction("Zoom Out");
+    zoomInAction = viewMenu->addAction(tr("Zoom In"));
+    zoomOutAction = viewMenu->addAction(tr("Zoom Out"));
     viewMenu->addSeparator();
-    fitToWindowAction = viewMenu->addAction("Fit to Window");
-    showGridAction = viewMenu->addAction("Show Grid");
+    fitToWindowAction = viewMenu->addAction(tr("Fit to Window"));
+    showGridAction = viewMenu->addAction(tr("Show Grid"));
 }
 
 void MenuBar::createImageMenu() {
-    imageMenu = addMenu("Image");
-
-    imageMenu->addAction("Resize");
-    imageMenu->addAction("Crop");
+    imageMenu->addAction(tr("Resize"));
+    imageMenu->addAction(tr("Crop"));
     imageMenu->addSeparator();
-    imageMenu->addAction("Rotate Left");
-    imageMenu->addAction("Rotate Right");
+    imageMenu->addAction(tr("Rotate Left"));
+    imageMenu->addAction(tr("Rotate Right"));
     imageMenu->addSeparator();
-    imageMenu->addAction("Flip Horizontal");
-    imageMenu->addAction("Flip Vertical");
+    imageMenu->addAction(tr("Flip Horizontal"));
+    imageMenu->addAction(tr("Flip Vertical"));
 }
 
 void MenuBar::createHelpMenu() {
-    helpMenu = addMenu("Help");
-
-    helpTopicsAction = helpMenu->addAction("Help Topics");
+    helpTopicsAction = helpMenu->addAction(tr("Help Topics"));
     helpMenu->addSeparator();
-    aboutAction = helpMenu->addAction(QIcon(":/resources/about.svg"), "About");
+    aboutAction = helpMenu->addAction(getIcon("about"), tr("About"));
 
-    connect(aboutAction, &QAction::triggered, this, [this]() {
-        AboutDialog dialog(this);
-        dialog.exec();
+    connect(aboutAction, &QAction::triggered, this, [this] {
+        QMessageBox aboutBox(this);
+        aboutBox.setWindowTitle(tr("About"));
+        aboutBox.setText(
+            tr("<h2>PaintApp v1.0</h2>"
+                "<p>Simple and multi-platform painting application.</p>"
+                "<p><b>Author: </b>Marcin Las</p>"
+                "<p><b>License: </b> MIT License</p>"
+                "<p>GitHub: <a href='https://github.com/greywarden09/portable-paint'>github.com/greywarden09/portable-paint</a></p>")
+        );
+        aboutBox.setIcon(QMessageBox::Information);
+        aboutBox.exec();
     });
 }
 

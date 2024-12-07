@@ -3,7 +3,9 @@
 #include <QMenuBar>
 #include <QObject>
 
-class MenuBar final : public QMenuBar {
+#include "../icon_provider/IconProvider.hpp"
+
+class MenuBar final : public QMenuBar, public IconProvider {
     Q_OBJECT
 
 public:
