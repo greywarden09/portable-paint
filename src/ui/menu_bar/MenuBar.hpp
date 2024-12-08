@@ -7,6 +7,7 @@
 
 class MenuBar final : public QMenuBar, public IconProvider {
     Q_OBJECT
+    int selectedTool = 0;
 
 public:
     explicit MenuBar(QWidget *parent = nullptr);
@@ -19,13 +20,28 @@ public:
 
     QAction *getExitAction() const;
 
+    QAction *getPencilToolAction() const;
+
+    QAction *getBrushToolAction() const;
+
+    QAction *getEraserToolAction() const;
+
+    QAction *getLineToolAction() const;
+
+    QAction *getRectangleToolAction() const;
+
+    QAction *getEllipseToolAction() const;
+
+signals:
+    void toolSelected(const int &tool);
+
 private:
-    QMenu *fileMenu;
-    QMenu *editMenu;
-    QMenu *toolsMenu;
-    QMenu *viewMenu;
-    QMenu *imageMenu;
-    QMenu *helpMenu;
+    QMenu *fileMenu{};
+    QMenu *editMenu{};
+    QMenu *toolsMenu{};
+    QMenu *viewMenu{};
+    QMenu *imageMenu{};
+    QMenu *helpMenu{};
 
     QAction *newAction{};
     QAction *openAction{};
@@ -52,7 +68,8 @@ private:
 
     QAction *helpTopicsAction{};
     QAction *aboutAction{};
-    QAction * pencilToolAction{};
+    QAction *pencilToolAction{};
+    QAction *saveAsAction{};
 
     void createFileMenu();
 
@@ -66,4 +83,3 @@ private:
 
     void createHelpMenu();
 };
-

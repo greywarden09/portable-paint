@@ -1,6 +1,9 @@
 #include "MenuBar.hpp"
 
+#include <QButtonGroup>
 #include <QMessageBox>
+#include <QAbstractButton>
+#include <QList>
 
 MenuBar::MenuBar(QWidget *parent)
     : QMenuBar(parent),
@@ -22,7 +25,7 @@ void MenuBar::createFileMenu() {
     newAction = fileMenu->addAction(getIcon("new"), tr("New"), QKeyCombination(Qt::CTRL | Qt::Key_N));
     openAction = fileMenu->addAction(getIcon("open"), tr("Open"), QKeyCombination(Qt::CTRL | Qt::Key_O));
     saveAction = fileMenu->addAction(getIcon("save"), tr("Save"), QKeyCombination(Qt::CTRL | Qt::Key_S));
-    saveAction = fileMenu->addAction(tr("Save As..."), QKeyCombination(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
+    saveAsAction = fileMenu->addAction(tr("Save As..."), QKeyCombination(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
     fileMenu->addSeparator();
     fileMenu->addAction(getIcon("print"), tr("Print"), QKeyCombination(Qt::CTRL | Qt::Key_P));
     exitAction = fileMenu->addAction(getIcon("exit"), tr("Exit"));
@@ -39,16 +42,40 @@ void MenuBar::createEditMenu() {
 
 void MenuBar::createToolsMenu() {
     pencilToolAction = toolsMenu->addAction(getIcon("pencil"), tr("Pencil"));
-    pencilToolAction->setCheckable(true);
     brushToolAction = toolsMenu->addAction(getIcon("brush"), tr("Brush"));
-    brushToolAction->setCheckable(true);
     eraserToolAction = toolsMenu->addAction(getIcon("eraser"), tr("Eraser"));
-    eraserToolAction->setCheckable(true);
 
     toolsMenu->addSeparator();
+
     lineToolAction = toolsMenu->addAction(getIcon("line"), tr("Line"));
     rectangleToolAction = toolsMenu->addAction(getIcon("rectangle"), tr("Rectangle"));
     ellipseToolAction = toolsMenu->addAction(getIcon("circle"), tr("Ellipse"));
+
+    auto actions = std::vector{
+        pencilToolAction,
+        brushToolAction,
+        eraserToolAction,
+        lineToolAction,
+        rectangleToolAction,
+        ellipseToolAction
+    };
+
+    actions[selectedTool]->setChecked(true);
+
+    for (int i = 0; i < actions.size(); ++i) {
+        QAction *action = actions[i];
+        action->setCheckable(true);
+        connect(action, &QAction::triggered, this, [i, this, actions]() {
+            if (i == selectedTool) {
+                actions[i]->setChecked(true);
+                return;
+            }
+            actions[selectedTool]->setChecked(false);
+            selectedTool = i;
+            actions[selectedTool]->setChecked(true);
+            emit toolSelected(selectedTool);
+        });
+    }
 }
 
 void MenuBar::createViewMenu() {
@@ -94,3 +121,9 @@ QAction *MenuBar::getNewAction() const { return newAction; }
 QAction *MenuBar::getOpenAction() const { return openAction; }
 QAction *MenuBar::getSaveAction() const { return saveAction; }
 QAction *MenuBar::getExitAction() const { return exitAction; }
+QAction *MenuBar::getPencilToolAction() const { return pencilToolAction; }
+QAction *MenuBar::getBrushToolAction() const { return brushToolAction; }
+QAction *MenuBar::getEraserToolAction() const { return eraserToolAction; }
+QAction *MenuBar::getLineToolAction() const { return lineToolAction; }
+QAction *MenuBar::getRectangleToolAction() const { return rectangleToolAction; }
+QAction *MenuBar::getEllipseToolAction() const { return ellipseToolAction; }
