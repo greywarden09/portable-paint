@@ -20,6 +20,9 @@ find_package(Qt6
 
 add_library(portable_paint_lib
         STATIC
+        src/actions/Actions.hpp
+        src/actions/FileMenuActions.hpp
+        src/tools/Tools.hpp
         src/windows/main_window/MainWindow.hpp src/windows/main_window/MainWindow.cpp
         src/ui/icon_provider/IconProvider.hpp src/ui/icon_provider/IconProvider.cpp
         src/ui/menu_bar/MenuBar.hpp src/ui/menu_bar/MenuBar.cpp

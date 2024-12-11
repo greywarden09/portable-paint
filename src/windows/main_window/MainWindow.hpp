@@ -12,4 +12,7 @@ private slots:
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+
+public slots:
+    void showAboutDialog();
 };

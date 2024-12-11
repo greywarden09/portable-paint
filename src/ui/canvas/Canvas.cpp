@@ -8,14 +8,52 @@
 
 Canvas::Canvas(QWidget *parent): QWidget(parent),
                                  width(512),
-                                 height(512),
-                                 selectedTool(PENCIL) {
-    pixelArray.resize(width * height, qRgb(255, 255, 255));
+                                 height(400),
+                                 selectedTool(PENCIL),
+                                 colorPrimary(qRgb(255, 0, 0)),
+                                 colorSecondary(qRgb(255, 255, 255)) {
+    setFixedSize(width, height);
+    move(0, 0);
+    pixelArray.resize(width * height, colorSecondary);
     setMouseTracking(true);
 }
 
 void Canvas::selectTool(const int &tool) {
     this->selectedTool = static_cast<SelectedTool>(tool);
+}
+
+void Canvas::rotateClockwise() {
+    std::vector<QRgb> rotatedImage(pixelArray.size());
+
+    const auto newWidth = height;
+    for (int row = 0; row < height; ++row) {
+        for (int col = 0; col < width; ++col) {
+            const auto srcIndex = row * width + col;
+            const auto destIndex = col * newWidth + (height - row - 1);
+            rotatedImage[destIndex] = pixelArray[srcIndex];
+        }
+    }
+    pixelArray = std::move(rotatedImage);
+    std::swap(width, height);
+
+    update();
+}
+
+void Canvas::rotateCounterclockwise() {
+    std::vector<QRgb> rotatedImage(pixelArray.size());
+
+    const auto newWidth = height;
+    for (int row = 0; row < height; ++row) {
+        for (int col = 0; col < width; ++col) {
+            const auto srcIndex = row * width + col;
+            const auto destIndex = (width - col - 1) * newWidth + row;
+            rotatedImage[destIndex] = pixelArray[srcIndex];
+        }
+    }
+    pixelArray = std::move(rotatedImage);
+    std::swap(width, height);
+
+    update();
 }
 
 void Canvas::drawPixel(const QPoint &point) {
@@ -25,15 +63,31 @@ void Canvas::drawPixel(const QPoint &point) {
     const auto componentHeight = this->height;
 
     if (x >= 0 && x < componentWidth && y >= 0 && y < componentHeight) {
-        pixelArray[y * componentWidth + x] = qRgb(0, 0, 0);
+        pixelArray[y * componentWidth + x] = selectedTool == ERASER ? colorSecondary : colorPrimary;
         update(QRect(point, QSize(1, 1)));
     }
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        lastPoint = event->pos();
-        drawPixel(event->pos());
+        switch (selectedTool) {
+            case PENCIL:
+                lastPoint = event->pos();
+                drawPixel(event->pos());
+                break;
+            case BRUSH:
+                break;
+            case ERASER:
+                lastPoint = event->pos();
+                drawPixel(event->pos());
+                break;
+            case LINE:
+                break;
+            case RECTANGLE:
+                break;
+            case ELLIPSE:
+                break;
+        }
     }
 }
 
@@ -48,9 +102,12 @@ void Canvas::mouseMoveEvent(QMouseEvent *event) {
         interpolateLine(lastPoint, event->pos());
         lastPoint = event->pos();
     }
-    if (event->pos().x() <= this->width && event->pos().y() <= this->height) {
-        emit cursorPositionChanged(event->pos());
+    if (selectedTool == ERASER) {
+        setCursor(Qt::CrossCursor);
+    } else {
+        setCursor(Qt::ArrowCursor);
     }
+    emit cursorPositionChanged(event->pos());
 }
 
 void Canvas::paintEvent(QPaintEvent *event) {

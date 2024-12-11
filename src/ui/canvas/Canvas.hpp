@@ -9,8 +9,11 @@ class Canvas final : public QWidget {
     int height;
     QPoint lastPoint;
 
+    QRgb colorPrimary;
+    QRgb colorSecondary;
+
     enum SelectedTool {
-        PENCIL,
+        PENCIL = 0,
         BRUSH,
         ERASER,
         LINE,
@@ -36,6 +39,10 @@ public:
 
 public slots:
     void selectTool(const int &tool);
+
+    void rotateClockwise();
+
+    void rotateCounterclockwise();
 
 signals:
     void cursorPositionChanged(const QPoint &point);
