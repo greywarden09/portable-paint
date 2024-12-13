@@ -6,27 +6,25 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QToolBar>
-#include <QSpinBox>
 
-#include "../../ui/canvas/Canvas.hpp"
+#include "../../actions/Actions.hpp"
 #include "../../ui/menu_bar/MenuBar.hpp"
 
 // ReSharper disable CppDFAMemoryLeak
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), cursorPositionLabel(new QLabel("X: 0, Y: 0", this)) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          centralWidget(new QWidget(this)),
+                                          canvas(new Canvas(this)),
+                                          cursorPositionLabel(new QLabel("X: 0, Y: 0", this)) {
     resize(800, 600);
     setWindowTitle("Portable Paint");
 
-
-    const auto centralWidget = new QWidget(this);
     const auto layout = new QVBoxLayout(centralWidget);
-    const auto canvas = new Canvas(centralWidget);
     layout->addWidget(canvas);
     setCentralWidget(centralWidget);
 
     const auto actions = new Actions(this, canvas);
     const auto menuBar = new MenuBar(actions, this);
     setMenuBar(menuBar);
-
 
     const auto toolBar = new QToolBar(this);
 
@@ -40,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), cursorPositionLab
     setStatusBar(statusBar);
 
     connect(canvas, &Canvas::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
-    connect(menuBar, &MenuBar::toolSelected, canvas, &Canvas::selectTool);
 }
 
 void MainWindow::showAboutDialog() {

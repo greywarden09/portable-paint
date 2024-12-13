@@ -1,5 +1,8 @@
 #pragma once
 #include <qwidget.h>
+#include <QPainter>
+
+#include "Tool.hpp"
 
 class Canvas final : public QWidget {
     Q_OBJECT
@@ -8,20 +11,19 @@ class Canvas final : public QWidget {
     int width;
     int height;
     QPoint lastPoint;
-
     QRgb colorPrimary;
     QRgb colorSecondary;
+    Tool selectedTool;
+    int eraserSize = 10;
 
-    enum SelectedTool {
-        PENCIL = 0,
-        BRUSH,
-        ERASER,
-        LINE,
-        RECTANGLE,
-        ELLIPSE
-    } selectedTool;
+    std::function<void(const QPoint&)> drawingHandler;
 
+    //void draw(const QPoint &point);
     void drawPixel(const QPoint &point);
+    void erasePixel(const QPoint &point);
+
+    [[nodiscard]] QCursor eraserCursor() const;
+    [[nodiscard]] std::vector<QPoint> getAffectedPixels(const QPoint &point) const;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -38,12 +40,10 @@ public:
     explicit Canvas(QWidget *parent = nullptr);
 
 public slots:
-    void selectTool(const int &tool);
-
-    void rotateClockwise();
-
-    void rotateCounterclockwise();
+    void selectTool();
 
 signals:
     void cursorPositionChanged(const QPoint &point);
 };
+
+

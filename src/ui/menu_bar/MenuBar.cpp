@@ -83,7 +83,9 @@ void MenuBar::createImageMenu() {
 }
 
 void MenuBar::createHelpMenu() {
-    helpMenu->addAction(tr("Help Topics"));
-    helpMenu->addSeparator();
-    helpMenu->addAction(getIcon("about"), tr("About"));
+    helpMenu->addActions({
+        actions->helpTopicsAction,
+        addSeparator(),
+        actions->aboutAction
+    });
 }

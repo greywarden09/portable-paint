@@ -3,8 +3,12 @@
 #include <QLabel>
 #include <QMainWindow>
 
+#include "../../ui/canvas/Canvas.hpp"
+
 class MainWindow final : public QMainWindow {
     Q_OBJECT
+    QWidget *centralWidget;
+    Canvas *canvas;
     QLabel *cursorPositionLabel;
 
 private slots:

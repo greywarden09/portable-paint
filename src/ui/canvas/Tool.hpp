@@ -1,6 +1,6 @@
 #pragma once
 
-enum Tools {
+enum Tool {
     PENCIL = 0,
     BRUSH,
     ERASER,
