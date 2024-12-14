@@ -32,6 +32,9 @@ add_library(portable_paint_lib
         src/ui/icon_provider/IconProvider.hpp src/ui/icon_provider/IconProvider.cpp
         src/ui/menu_bar/MenuBar.hpp src/ui/menu_bar/MenuBar.cpp
         src/ui/canvas/Canvas.hpp src/ui/canvas/Canvas.cpp
+        src/ui/tool_bar/ToolBar.hpp src/ui/tool_bar/ToolBar.cpp
+        src/ui/widgets/color_picker/ColorPickerToolButton.hpp src/ui/widgets/color_picker/ColorPickerToolButton.cpp
+        src/ui/widgets/color_picker/ColorPickerActionWidget.hpp src/ui/widgets/color_picker/ColorPickerActionWidget.cpp
         resources.qrc
 )
 

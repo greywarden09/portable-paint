@@ -1,4 +1,6 @@
 #include "Canvas.hpp"
+
+#include <iostream>
 #include <QMouseEvent>
 #include <QImage>
 #include <QPainter>
@@ -8,20 +10,19 @@
 #include "../menu_bar/MenuBar.hpp"
 
 Canvas::Canvas(QWidget *parent): QWidget(parent),
+                                 eraserSize(10),
                                  width(512),
                                  height(400),
-                                 selectedTool(PENCIL),
-                                 colorPrimary(qRgb(255, 0, 0)),
-                                 colorSecondary(qRgb(255, 255, 255)) {
+                                 colorPrimary(qRgb(0, 0, 0)),
+                                 selectedTool(PENCIL) {
     setFixedSize(width, height);
+    setGeometry(0, 0, width, height);
     QPalette palette;
     palette.setColor(QPalette::Window, Qt::white);
     setAutoFillBackground(true);
     setPalette(palette);
 
-    drawingHandler = [this](const QPoint &pos) {
-        drawPixel(pos);
-    };
+    drawingHandler = [&](const QPoint &pos) { drawPixel(pos); };
 
     pixelArray.resize(width * height, qRgba(0, 0, 0, 0));
     setMouseTracking(true);
@@ -61,16 +62,22 @@ void Canvas::selectTool() {
     const auto action = qobject_cast<QAction *>(sender());
     const auto tool = static_cast<Tool>(action->data().toInt());
     this->selectedTool = tool;
+    unsetCursor();
     switch (tool) {
         case ERASER:
-            drawingHandler = [this](const QPoint &pos) {
-                erasePixel(pos);
-            };
+            drawingHandler = [&](const QPoint &pos) { erasePixel(pos); };
             setCursor(eraserCursor());
             break;
+        case PENCIL:
+            drawingHandler = [&](const QPoint &pos) { drawPixel(pos); };
+            break;
         default:
-            unsetCursor();
+            ;
     }
+}
+
+void Canvas::colorSelected(const QColor color) {
+    this->colorPrimary = color.rgb();
 }
 
 /*void Canvas::rotateRight() {
@@ -132,6 +139,25 @@ void Canvas::erasePixel(const QPoint &point) {
     update(QRect(point.x() - eraserSize / 2, point.y() - eraserSize / 2, eraserSize, eraserSize));
 }
 
+void Canvas::updateEraserSize(const QWheelEvent *event) {
+    const QPoint numPixels = event->pixelDelta();
+    const QPoint numDegrees = event->angleDelta() / 8;
+
+    auto tmp = eraserSize;
+
+    if (!numPixels.isNull()) {
+        tmp += numPixels.y();
+    } else if (!numDegrees.isNull()) {
+        const QPoint numSteps = numDegrees / 15;
+        tmp += numSteps.y();
+    }
+
+    eraserSize = std::max(static_cast<unsigned short>(1), tmp);
+
+    setCursor(eraserCursor());
+    update();
+}
+
 void Canvas::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         lastPoint = event->pos();
@@ -158,6 +184,15 @@ void Canvas::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     const QImage image(reinterpret_cast<uchar *>(pixelArray.data()), width, height, QImage::Format_ARGB32);
     painter.drawImage(0, 0, image);
+}
+
+void Canvas::wheelEvent(QWheelEvent *event) {
+    QWidget::wheelEvent(event);
+    switch (selectedTool) {
+        case ERASER:
+            updateEraserSize(event);
+            break;
+    }
 }
 
 void Canvas::interpolateLine(const QPoint &start, const QPoint &end) {

@@ -9,6 +9,7 @@
 
 #include "../../actions/Actions.hpp"
 #include "../../ui/menu_bar/MenuBar.hpp"
+#include "../../ui/tool_bar/ToolBar.hpp"
 
 // ReSharper disable CppDFAMemoryLeak
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
@@ -26,9 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     const auto menuBar = new MenuBar(actions, this);
     setMenuBar(menuBar);
 
-    const auto toolBar = new QToolBar(this);
-
-    toolBar->addSeparator();
+    const auto toolBar = new ToolBar(actions, this);
 
     addToolBar(Qt::TopToolBarArea, toolBar);
 
@@ -38,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     setStatusBar(statusBar);
 
     connect(canvas, &Canvas::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    connect(toolBar, &ToolBar::colorSelected, canvas, &Canvas::colorSelected);
 }
 
 void MainWindow::showAboutDialog() {

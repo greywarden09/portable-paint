@@ -11,6 +11,7 @@
 
 // ReSharper disable CppDFAMemoryLeak
 class Actions final : public QObject {
+    Q_OBJECT
 
     QWidget *parent;
     FileMenuActions *fileMenuActions;

@@ -4,32 +4,18 @@
 #include "../../ui/icon_provider/IconProvider.hpp"
 
 class ViewMenuActions final : QObject, IconProvider {
+    Q_OBJECT
     friend class Actions;
 
-    explicit ViewMenuActions(QWidget *parent): parent(parent) {
-    }
+    explicit ViewMenuActions(QWidget *parent);
 
-    [[nodiscard]] QAction *zoomInAction() const {
-        const auto action = new QAction(tr("Zoom In"), parent);
-        action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Plus));
-        return action;
-    }
+    [[nodiscard]] QAction *zoomInAction() const;
 
-    [[nodiscard]] QAction *zoomOutAction() const {
-        const auto action = new QAction(tr("Zoom Out"), parent);
-        action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Minus));
-        return action;
-    }
+    [[nodiscard]] QAction *zoomOutAction() const;
 
-    [[nodiscard]] QAction *fitToWindowAction() const {
-        const auto action = new QAction(tr("Fit to Window"), parent);
-        return action;
-    }
+    [[nodiscard]] QAction *fitToWindowAction() const;
 
-    [[nodiscard]] QAction *showGridAction() const {
-        const auto action = new QAction(tr("Show Grid"), parent);
-        return action;
-    }
+    [[nodiscard]] QAction *showGridAction() const;
 
     QWidget *parent;
 };

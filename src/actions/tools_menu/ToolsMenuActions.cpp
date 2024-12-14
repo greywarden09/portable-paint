@@ -53,7 +53,7 @@ QAction *ToolsMenuActions::rectangleToolAction() const {
 }
 
 QAction *ToolsMenuActions::ellipseToolAction() const {
-    const auto action = new QAction(getIcon("ellipse"), tr("Ellipse"), parent);
+    const auto action = new QAction(getIcon("circle"), tr("Ellipse"), parent);
     action->setData(ELLIPSE);
     action->setCheckable(true);
     actionGroup->addAction(action);

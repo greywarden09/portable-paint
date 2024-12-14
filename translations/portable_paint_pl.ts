@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/actions/edit_menu/EditMenuActions.cpp" line="7"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Cofnij</translation>
     </message>
     <message>
         <location filename="../src/actions/edit_menu/EditMenuActions.cpp" line="13"/>
