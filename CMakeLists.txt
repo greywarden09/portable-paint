@@ -28,6 +28,7 @@ add_library(portable_paint_lib
         src/actions/image_menu/ImageMenuActions.hpp src/actions/image_menu/ImageMenuActions.cpp
         src/actions/help_menu/HelpMenuActions.hpp src/actions/help_menu/HelpMenuActions.cpp
         src/ui/canvas/Tool.hpp
+        src/ui/canvas/EraserShape.hpp
         src/windows/main_window/MainWindow.hpp src/windows/main_window/MainWindow.cpp
         src/ui/icon_provider/IconProvider.hpp src/ui/icon_provider/IconProvider.cpp
         src/ui/menu_bar/MenuBar.hpp src/ui/menu_bar/MenuBar.cpp
@@ -35,6 +36,7 @@ add_library(portable_paint_lib
         src/ui/tool_bar/ToolBar.hpp src/ui/tool_bar/ToolBar.cpp
         src/ui/widgets/color_picker/ColorPickerToolButton.hpp src/ui/widgets/color_picker/ColorPickerToolButton.cpp
         src/ui/widgets/color_picker/ColorPickerActionWidget.hpp src/ui/widgets/color_picker/ColorPickerActionWidget.cpp
+        src/ui/widgets/eraser_toolbox/EraserToolbox.hpp src/ui/widgets/eraser_toolbox/EraserToolbox.cpp
         resources.qrc
 )
 

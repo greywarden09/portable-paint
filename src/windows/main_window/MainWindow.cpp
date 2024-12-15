@@ -19,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     resize(800, 600);
     setWindowTitle("Portable Paint");
 
-    const auto layout = new QVBoxLayout(centralWidget);
-    layout->addWidget(canvas);
+    const auto layout = new QGridLayout(centralWidget);
+    layout->addWidget(canvas, 0, 0, 10, 10, Qt::AlignTop | Qt::AlignLeft);
     setCentralWidget(centralWidget);
 
     const auto actions = new Actions(this, canvas);
@@ -37,6 +37,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     setStatusBar(statusBar);
 
     connect(canvas, &Canvas::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
+    connect(canvas, &Canvas::eraserSizeChanged, toolBar, &ToolBar::eraserSizeChanged);
+    connect(toolBar, &ToolBar::selectedSquareShapeEraser, canvas, &Canvas::setSquareEraserShape);
+    connect(toolBar, &ToolBar::eraserSizeChanged, canvas, &Canvas::changeEraserSize);
     connect(toolBar, &ToolBar::colorSelected, canvas, &Canvas::colorSelected);
 }
 

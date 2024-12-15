@@ -39,7 +39,7 @@ void ColorPickerToolButton::onColorDialogAction() {
     colorDialog->setOption(QColorDialog::DontUseNativeDialog, false);
     colorDialog->setCurrentColor(currentColor);
     if (colorDialog->exec() == QColorDialog::Accepted) {
-        currentColor = colorDialog->currentColor();
+        setCurrentColor(colorDialog->currentColor());
     }
 }
 

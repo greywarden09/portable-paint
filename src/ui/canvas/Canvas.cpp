@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QVariant>
 
+#include "EraserShape.hpp"
 #include "../../windows/main_window/MainWindow.hpp"
 #include "../menu_bar/MenuBar.hpp"
 
@@ -80,6 +81,16 @@ void Canvas::colorSelected(const QColor color) {
     this->colorPrimary = color.rgb();
 }
 
+void Canvas::changeEraserSize(const int newSize) {
+    eraserSize = newSize;
+    setCursor(eraserCursor());
+    update();
+}
+
+void Canvas::setSquareEraserShape() {
+    qDebug("");
+}
+
 /*void Canvas::rotateRight() {
     std::vector<QRgb> rotatedImage(pixelArray.size());
 
@@ -152,10 +163,11 @@ void Canvas::updateEraserSize(const QWheelEvent *event) {
         tmp += numSteps.y();
     }
 
-    eraserSize = std::max(static_cast<unsigned short>(1), tmp);
+    eraserSize = std::clamp(tmp, static_cast<unsigned short>(1), static_cast<unsigned short>(255));
 
     setCursor(eraserCursor());
     update();
+    emit eraserSizeChanged(eraserSize);
 }
 
 void Canvas::mousePressEvent(QMouseEvent *event) {

@@ -3,10 +3,12 @@
 #include <functional>
 #include <QPainter>
 
+#include "EraserShape.hpp"
 #include "Tool.hpp"
 
 class Canvas final : public QWidget {
     Q_OBJECT
+
     unsigned short eraserSize;
     std::vector<QRgb> pixelArray;
     int width;
@@ -14,6 +16,7 @@ class Canvas final : public QWidget {
     QPoint lastPoint;
     QRgb colorPrimary;
     Tool selectedTool;
+    //EraserShape eraserShape = ;
 
     std::function<void(const QPoint &)> drawingHandler;
 
@@ -46,7 +49,11 @@ public:
 public slots:
     void selectTool();
     void colorSelected(QColor color);
+    void changeEraserSize(int newSize);
+
+    static void setSquareEraserShape();
 
 signals:
     void cursorPositionChanged(const QPoint &point);
+    void eraserSizeChanged(int newSize);
 };
