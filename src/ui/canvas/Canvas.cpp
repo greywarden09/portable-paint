@@ -15,7 +15,8 @@ Canvas::Canvas(QWidget *parent): QWidget(parent),
                                  width(512),
                                  height(400),
                                  colorPrimary(qRgb(0, 0, 0)),
-                                 selectedTool(PENCIL) {
+                                 selectedTool(PENCIL),
+                                 eraserShape(SQUARE) {
     setFixedSize(width, height);
     setGeometry(0, 0, width, height);
     QPalette palette;
@@ -36,7 +37,11 @@ QCursor Canvas::eraserCursor() const {
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::black);
     painter.setBrush(Qt::white);
-    painter.drawRect(0, 0, eraserSize, eraserSize);
+    if (eraserShape == SQUARE) {
+        painter.drawRect(0, 0, eraserSize, eraserSize);
+    } else {
+        painter.drawEllipse(0, 0, eraserSize, eraserSize);
+    }
     painter.end();
 
     return QCursor(pixmap);
@@ -52,7 +57,15 @@ std::vector<QPoint> Canvas::getAffectedPixels(const QPoint &point) const {
 
     for (auto y = startY; y <= endY; ++y) {
         for (int x = startX; x <= endX; ++x) {
-            result.emplace_back(x, y);
+            if (eraserShape == SQUARE) {
+                result.emplace_back(x, y);
+            } else {
+                const auto dx = x - point.x();
+                const auto dy = y - point.y();
+                if (dx * dx + dy * dy <= halfSize * halfSize) {
+                    result.emplace_back(x, y);
+                }
+            }
         }
     }
 
@@ -88,7 +101,15 @@ void Canvas::changeEraserSize(const int newSize) {
 }
 
 void Canvas::setSquareEraserShape() {
-    qDebug("");
+    this->eraserShape = SQUARE;
+    setCursor(eraserCursor());
+    update();
+}
+
+void Canvas::setCircleEraserShape() {
+    this->eraserShape = CIRCLE;
+    setCursor(eraserCursor());
+    update();
 }
 
 /*void Canvas::rotateRight() {
@@ -138,7 +159,7 @@ void Canvas::drawPixel(const QPoint &point) {
 }
 
 void Canvas::erasePixel(const QPoint &point) {
-    auto pixels = getAffectedPixels(point);
+    const auto pixels = getAffectedPixels(point);
 
     for (const auto &pixel: pixels) {
         const auto x = pixel.x();
@@ -151,13 +172,13 @@ void Canvas::erasePixel(const QPoint &point) {
 }
 
 void Canvas::updateEraserSize(const QWheelEvent *event) {
-    const QPoint numPixels = event->pixelDelta();
+    const QPoint numPixels = event->pixelDelta() / 8;
     const QPoint numDegrees = event->angleDelta() / 8;
 
     auto tmp = eraserSize;
 
     if (!numPixels.isNull()) {
-        tmp += numPixels.y();
+        tmp += numPixels.y() / 15;
     } else if (!numDegrees.isNull()) {
         const QPoint numSteps = numDegrees / 15;
         tmp += numSteps.y();

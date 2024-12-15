@@ -16,7 +16,7 @@ class Canvas final : public QWidget {
     QPoint lastPoint;
     QRgb colorPrimary;
     Tool selectedTool;
-    //EraserShape eraserShape = ;
+    EraserShape eraserShape;
 
     std::function<void(const QPoint &)> drawingHandler;
 
@@ -48,12 +48,17 @@ public:
 
 public slots:
     void selectTool();
+
     void colorSelected(QColor color);
+
     void changeEraserSize(int newSize);
 
-    static void setSquareEraserShape();
+    void setSquareEraserShape();
+
+    void setCircleEraserShape();
 
 signals:
     void cursorPositionChanged(const QPoint &point);
+
     void eraserSizeChanged(int newSize);
 };

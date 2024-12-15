@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(canvas, &Canvas::cursorPositionChanged, this, &MainWindow::updateCursorPosition);
     connect(canvas, &Canvas::eraserSizeChanged, toolBar, &ToolBar::eraserSizeChanged);
     connect(toolBar, &ToolBar::selectedSquareShapeEraser, canvas, &Canvas::setSquareEraserShape);
+    connect(toolBar, &ToolBar::selectedCircleShapeEraser, canvas, &Canvas::setCircleEraserShape);
     connect(toolBar, &ToolBar::eraserSizeChanged, canvas, &Canvas::changeEraserSize);
     connect(toolBar, &ToolBar::colorSelected, canvas, &Canvas::colorSelected);
 }

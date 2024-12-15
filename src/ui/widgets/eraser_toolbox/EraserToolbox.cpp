@@ -13,6 +13,7 @@
 // ReSharper disable CppDFAMemoryLeak
 EraserToolbox::EraserToolbox(QWidget *parent): QGroupBox(parent),
                                                eraserSize(new QSpinBox(this)) {
+    setContentsMargins(0, -5, 0, -5);
     QWidget::setVisible(false);
 
     const auto layout = new QHBoxLayout(this);
@@ -46,6 +47,7 @@ EraserToolbox::EraserToolbox(QWidget *parent): QGroupBox(parent),
 
     connect(eraserSize, &QSpinBox::valueChanged, this, &EraserToolbox::eraserSizeChanged);
     connect(squareShapeButton, &QPushButton::pressed, this, &EraserToolbox::selectedSquareShapeEraser);
+    connect(circleShapeButton, &QPushButton::pressed, this, &EraserToolbox::selectedCircleShapeEraser);
     connect(this, &EraserToolbox::updateEraserSize, eraserSize, &QSpinBox::setValue);
 }
 

@@ -8,6 +8,7 @@ ToolBar::ToolBar(Actions *actions, QWidget *parent) : QToolBar(parent),
                                                       actions(actions),
                                                       colorPickerToolButton(
                                                           new ColorPickerToolButton(this)) {
+    setIconSize(QSize(32, 32));
     const auto eraserToolBox = new EraserToolbox(this);
 
     addAction(actions->pencilToolAction);
@@ -21,6 +22,7 @@ ToolBar::ToolBar(Actions *actions, QWidget *parent) : QToolBar(parent),
     connect(actions->eraserToolAction, &QAction::toggled, this, &ToolBar::toggleEraserToolbox);
     connect(eraserToolBox, &EraserToolbox::eraserSizeChanged, this, &ToolBar::eraserSizeChanged);
     connect(eraserToolBox, &EraserToolbox::selectedSquareShapeEraser, this, &ToolBar::selectedSquareShapeEraser);
+    connect(eraserToolBox, &EraserToolbox::selectedCircleShapeEraser, this, &ToolBar::selectedCircleShapeEraser);
     connect(this, &ToolBar::eraserSizeChanged, eraserToolBox, &EraserToolbox::updateEraserSize);
     connect(colorPickerToolButton, &ColorPickerToolButton::colorSelected, this, &ToolBar::colorSelected);
 }

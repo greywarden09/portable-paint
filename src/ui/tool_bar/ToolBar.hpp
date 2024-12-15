@@ -19,4 +19,5 @@ signals:
     void colorSelected(QColor color);
     void eraserSizeChanged(int size);
     void selectedSquareShapeEraser();
+    void selectedCircleShapeEraser();
 };

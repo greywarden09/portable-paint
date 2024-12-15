@@ -18,4 +18,5 @@ signals:
     void updateEraserSize(int size) const;
     void pickedEraserShape(int id, bool selected) const;
     void selectedSquareShapeEraser() const;
+    void selectedCircleShapeEraser() const;
 };
